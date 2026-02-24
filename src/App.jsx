@@ -1,6 +1,7 @@
-import React from 'react';
+//import React from 'react';
 import './App.css';
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
+import React, {useState} from 'react';
 
 
 const Banner = props => (
@@ -29,7 +30,7 @@ const getCourseNumber = course => (
 
 
 const fetchSchedule = async () => {
-  const url = '/data.json';
+  const url = '/data.json' ;
   const response = await fetch(url);
   if (!response.ok) throw response;
   return await response.json();
@@ -41,15 +42,51 @@ const fetchSchedule = async () => {
 //   { Object.values(courses).map(course => <Course key={course.id} course={ course } />) }
 //   </div>
 // );
-const CourseList = ({ courses }) => (
-  <div className="course-list">
-    {Object.entries(courses).map(([id, course]) => (
-      <Course key={id} course={{ ...course, id }} />
-    ))}
-  </div>
+const CourseList = ({ courses }) => {
+  const [term, setTerm] = useState('Fall');
+  //const termCourses = Object.values(courses).filter(course => term === getCourseTerm(course));
+    const termCourses = Object.entries(courses)
+    .map(([id, course]) => ({ ...course, id }))
+    .filter(course => term === getCourseTerm(course));
+    
+  return (
+    //Usada para no crear div's de más
+    <>
+      <TermSelector term={term} setTerm={setTerm}/>
+      <div className="course-list">
+      { termCourses.map(course => <Course key={course.id} course={ course } />) }
+      </div>
+    </>
+  );
+};
+
+const TermButton = ({term, checked, setTerm}) => (
+  <>
+    <input type="radio" 
+      id={term} 
+      className="btn-check" 
+      autoComplete="off"
+      checked={checked} 
+      onChange={() => setTerm(term)} />
+    <label className="btn btn-success m-1 p-2" htmlFor={term}>
+    { term }
+    </label>
+  </>
 );
 
-
+const TermSelector = ({term, setTerm}) => (
+  <div className="btn-group">
+  { 
+    Object.values(terms).map(value => (
+      <TermButton key={value} 
+      term={value} 
+      checked={value === term} 
+      setTerm={setTerm}
+      />
+    ))
+  }
+  </div>
+);
 const Main = () =>  {
   const { data, isLoading, error } = useQuery({
     queryKey: ['schedule'],
@@ -76,38 +113,8 @@ const App = () => (
   </QueryClientProvider>
 );
 
-// const App = () =>  (
-//     <div className="container">
-//       <Banner title={ schedule.title } />
-//       <CourseList courses={ schedule.courses } />
-//     </div>
-//   );
+
 
 
 export default App;
 
-// const schedule = {
-//   "title": "CS Courses for 2018-2019",
-//   "courses": {
-//     "F101" : {
-//       "id" : "F101",
-//       "meets" : "MWF 11:00-11:50",
-//       "title" : "Computer Science: Concepts, Philosophy, and Connections"
-//     },
-//     "F110" : {
-//       "id" : "F110",
-//       "meets" : "MWF 10:00-10:50",
-//       "title" : "Intro Programming for non-majors"
-//     },
-//     "S313" : {
-//       "id" : "S313",
-//       "meets" : "TuTh 15:30-16:50",
-//       "title" : "Tangible Interaction Design and Learning"
-//     },
-//     "S314" : {
-//       "id" : "S314",
-//       "meets" : "TuTh 9:30-10:50",
-//       "title" : "Tech & Human Interaction"
-//     }
-//   }
-// };
