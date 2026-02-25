@@ -20,3 +20,6 @@ import { getDatabase } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   export const database = getDatabase(app);
+
+
+  

@@ -4,7 +4,7 @@ import { useData } from '../utilities/useData.js';
 import { addScheduleTimes } from '../utilities/scheduleUtils.js';
 
 const Main = () => {
-  const { data, loading, error } = useData('/schedule', addScheduleTimes);
+  const { data, loading, error } = useData('/', addScheduleTimes);
 
   if (loading) return <h1>Loading the schedule...</h1>;
   if (error) return <h1>Error loading schedule</h1>;
