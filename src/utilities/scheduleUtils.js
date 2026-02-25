@@ -18,8 +18,11 @@ export const addScheduleTimes = schedule => ({
 
 
 export const fetchSchedule = async () => {
-  const url = '/data.json' ;
+  //Local
+  // const url = '/data.json' ; 
+  //Web
+  const url = 'https://courses.cs.northwestern.edu/394/guides/data/cs-courses.php';
   const response = await fetch(url);
   if (!response.ok) throw response;
-  return addScheduleTimes(await response.json());;
+  return addScheduleTimes(await response.json());
 };

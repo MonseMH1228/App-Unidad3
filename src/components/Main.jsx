@@ -1,16 +1,12 @@
-import React from 'react';
-import { useQuery } from '@tanstack/react-query';
-import Banner from './Banner';
-import CourseList from './CourseList';
-import {fetchSchedule} from '../utilities/scheduleUtils';
+import Banner from './Banner.jsx';
+import CourseList from './CourseList.jsx';
+import { useData } from '../utilities/useData.js';
+import { addScheduleTimes } from '../utilities/scheduleUtils.js';
 
-const Main = () =>  {
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['schedule'],
-    queryFn: fetchSchedule
-  });
+const Main = () => {
+  const { data, loading, error } = useData('/schedule', addScheduleTimes);
 
-  if (isLoading) return <h1>Loading the schedule...</h1>;
+  if (loading) return <h1>Loading the schedule...</h1>;
   if (error) return <h1>Error loading schedule</h1>;
   if (!data) return null;
 
