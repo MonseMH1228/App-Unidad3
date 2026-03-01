@@ -1,12 +1,15 @@
 import React from 'react';
 import {isCourseSelected, hasScheduleConflict, toggle} from '../utilities/courseUtils';
 import { getCourseTerm, getCourseNumber } from '../utilities/courseUtils';
+import { useUserState } from '../utilities/firebase';
 
 const Course = ({ course, selected, setSelected }) => {
 //Revisa si se esta seleccionando un curso
 const isSelected = isCourseSelected(course, selected);
 const hasConflictWithOthers = hasScheduleConflict(course, selected);
 const isDisabled = !isSelected && hasConflictWithOthers;
+// const [user] = useUserState();
+const [editingCourse, setEditingCourse] = useState(null);
 
 //inclucion de CSS, para modificaciones déspues de seleccionar
 const style = {
@@ -18,7 +21,10 @@ const style = {
   //mandamos a llamar el estilo previamente declarado
   style={style}
   //mandamos a llamar el filtro al momento de dar un click
-  onClick = {isDisabled ? null:()=> setSelected(toggle(course, selected))}>
+  onClick = {
+    isDisabled ? null:()=> setSelected(toggle(course, selected))}
+  //Generacion de un doble click para la edición 
+  onDoubleClick={!user ? undefined : () => reschedule(course, getMeetingData(course))}>
     <div className="card-body">
       <div className="card-title">{ getCourseTerm(course) } CS { getCourseNumber(course) }</div>
       <div className="card-text">{ course.title }</div>
@@ -27,5 +33,7 @@ const style = {
   </div>
   );
 };
+
+
 
 export default Course;
